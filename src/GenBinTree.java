@@ -27,8 +27,7 @@ public class GenBinTree
 
 	public boolean add(String lr, String m)
 	{
-		Node temp;
-
+		Node temp, newNode;
 		Integer d = Integer.parseInt(m);
 
 		if (find(d, root) == true) // Check for duplicates.
@@ -38,26 +37,36 @@ public class GenBinTree
 			// Check if first parameter is string of only L and R.
 			char arr[] = lr.toCharArray();
 			for (char c : arr)
-				if (c != 'L' || c != 'R')
+				if (c != 'L' && c != 'R')
 					return false;
 			// Traverse to node to be added.
 			temp = root;
+			newNode = new Node(d);
+			
 			for (char k : arr)
 			{
+				if (k == 'L' && temp.left == null)
+				{
+					temp.left = newNode;
+					break;
+				}
 				if (k == 'L')
 					temp = temp.left;
+				if (k == 'R' && temp.right == null)
+				{
+					temp.right = newNode;
+					break;
+				}
 				if (k == 'R')
 					temp = temp.right;
 			}
-			// Make new node with null children and data of parameter d.
-			temp = new Node(d);
 		}
 		return true;
 	}
 
 	public boolean add(String lr, Integer d)
 	{
-		Node temp;
+		Node temp, newNode;
 
 		if (find(d, root) == true) // Check for duplicates.
 			return false;
@@ -66,19 +75,32 @@ public class GenBinTree
 			// Check if first parameter is string of only L and R.
 			char arr[] = lr.toCharArray();
 			for (char c : arr)
-				if (c != 'L' || c != 'R')
+				if (c != 'L' && c != 'R')
 					return false;
 			// Traverse to node to be added.
 			temp = root;
+			newNode = new Node(d);
+			
 			for (char k : arr)
 			{
+				if (k == 'L' && temp.left == null)
+				{
+					temp.left = newNode;
+					break;
+				}
+				
 				if (k == 'L')
 					temp = temp.left;
+				
+				if (k == 'R' && temp.right == null)
+				{
+					temp.right = newNode;
+					break;
+				}
+				
 				if (k == 'R')
 					temp = temp.right;
 			}
-			// Make new node with null children and data of parameter d.
-			temp = new Node(d);
 		}
 		return true;
 	}
@@ -104,13 +126,6 @@ public class GenBinTree
 		return find(val, root);
 	}
 
-	// public boolean find(Integer d)
-	// {
-	// if (find2(d, root) == true)
-	// return true;
-	// else
-	// return false;
-	// }
 
 	public boolean hasChild(Node n)
 	{
@@ -160,15 +175,21 @@ public class GenBinTree
 		p.right = temp.left;
 	}
 
-	public void mirror(Node r)
+	public void mirror()
 	{
+		mirrorTree(root);
+	}
+	
+	public void mirrorTree(Node r)
+	{
+		
 		if (r != null)
 		{
 			Node temp = r.left;
 			r.left = r.right;
 			r.right = temp;
-			mirror(r.right);
-			mirror(r.left);
+			mirrorTree(r.right);
+			mirrorTree(r.left);
 		}
 		return;
 	}
@@ -221,41 +242,67 @@ public class GenBinTree
 		y.left = x;
 	}
 
-	int count = 0;
-
-	public int countNodes(Node x)
+	public int countRecur(Node x)
 	{
 		Node right = x.right;
 		Node left = x.left;
 		int c = 1;
 
 		if (right != null)
-			c += countNodes(right);
+			c += countRecur(right);
 		if (left != null)
-			c += countNodes(left);
+			c += countRecur(left);
 		return c;
 	}
+	
+	public int countNode()
+	{
+		return countRecur(root);
+	}
 
-	public void print(Node x)
+	public void printRecur(Node x)
 	{
 		if (x != null)
 		{
-			print(x.left);
+			printRecur(x.left);
 			System.out.println(x.data);
-			print(x.right);
+			printRecur(x.right);
 		}
+	}
+	
+	public void print()
+	{
+		printRecur(root);
 	}
 
 	public static void main(String args[])
 	{
 		GenBinTree myTree = new GenBinTree();
-
+		
+		//Make Tree
 		myTree.add(100);
-		myTree.add("L", 50);
+		myTree.add("L", "50");
 		myTree.add("R", 150);
 		myTree.add("LL", 40);
 		myTree.add("LLR", 45);
-
-		System.out.println(myTree.find(40));
+		
+		//Find test
+		System.out.println(myTree.find(50));
+		
+		//Count nodes
+		System.out.println(myTree.countNode());
+		
+		//print tree
+		myTree.print();
+		
+		//swap test
+		myTree.swap(100);
+		myTree.print();
+		
+//		//Mirror test
+//		myTree.mirror();
+//		myTree.print();
+		
+		
 	}
 }
